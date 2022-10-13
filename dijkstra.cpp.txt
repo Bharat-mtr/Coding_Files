@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+int inf = 1000000007;
+
+vector<int> dijkstra(int v, vector<vector<int>> adj[], int src)
+{
+    vector<int> d(v + 1, inf);
+    d[src] = 0;
+
+    set<vector<int>> st;
+    st.insert({0, src});
+
+    while (!st.empty())
+    {
+        auto x = *st.begin();
+        st.erase(x);
+
+        for (auto e : adj[x[1]])
+        {
+            if (d[e[0]] > d[x[1]] + e[1])
+            {
+                st.erase({d[e[0]], e[0]});
+                d[e[0]] = d[x[1]] + e[1];
+
+                st.insert({d[e[0]], e[0]});
+            }
+        }
+    }
+    return d;
+}
+
+int main()
+{
+    int n, m, src;
+    cin >> n >> m;
+
+    vector<vector<int>> adj[n + 1];
+
+    for (int i = 0; i < m; i++)
+    {
+        int u, v, w;
+        cin >> u >> v >> w;
+
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+    cin >> src;
+    vector<int> d = dijkstra(n, adj, src);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (d[i] < inf)
+            cout << d[i] << " ";
+        else
+            cout << "INF"
+                 << " ";
+    }
+}
