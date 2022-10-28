@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+class Graph{
+    ll V;
+    vector<pair<ll,ll> > *l;
+    public:
+    Graph(ll V)
+    {
+        this->V=V;
+        l=new vector<pair<ll,ll> >[V];
+    }
+
+    void addEdge(ll x,ll y,ll w)
+    {
+        l[x].push_back(make_pair(y,w));
+        l[y].push_back(make_pair(x,w));
+
+    }
+
+    ll prim_algo(ll src)
+    {
+        bool *visited=new bool[V];
+        for(ll i=0;i<V;i++)
+        {
+            visited[i]=false;
+        }
+        priority_queue<pair<ll,ll>,vector<pair<ll,ll> >,greater<pair<ll,ll> > > Q;
+        Q.push(make_pair(0,src));
+        ll ans=0;
+        //cout<<Q.size()<<" ";
+
+        while(!Q.empty())
+        {
+            auto best=Q.top();
+            Q.pop();
+
+            ll to=best.second;
+            ll wt=best.first;
+            //cout<<to<<" ";
+
+            if(visited[to])
+            {
+                continue;
+            }
+            visited[to]=true;
+            ans+=wt;
+            //cout<<ans<<" ";
+
+            for(auto nbr:l[to])
+            {
+                if(!visited[nbr.first])
+                {
+                    Q.push(make_pair(nbr.second,nbr.first));
+                }
+            }
+
+        }
+        return ans;
+
+    }
+
+};
+int main() {
+    ll n,m;
+    cin>>n>>m;
+    Graph g(n);
+    while(m--)
+    {
+        ll x,y,w;
+        cin>>x>>y>>w;
+        g.addEdge(x-1,y-1,w);
+    }
+    ll src;
+    cin>>src;
+    cout<<g.prim_algo(src-1);
+
+    return 0;
+}
