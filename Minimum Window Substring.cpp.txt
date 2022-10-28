@@ -1,0 +1,46 @@
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int n=s.size(),m=t.size();
+        if(m>n)
+            return "";
+        // if(m==n)
+        // {
+        //     return t==s?s:"";
+        // }
+        vector<int> freq1(256,0),freq2(256,0);
+        set<int> st;
+        for(auto x:t)
+        {
+            freq2[x]++;
+            st.insert(x);
+        }
+        int i=0,j=0;
+        int cnt=0;
+        int l=INT_MAX;
+        int start_idx=0;
+        while(j<n)
+        {
+            freq1[s[j]]++;
+            if(freq1[s[j]]==freq2[s[j]] and freq2[s[j]]!=0)
+                cnt++;
+            if(cnt==st.size())
+            {
+                while(freq1[s[i]]-1>=freq2[s[i]])
+                {
+                    freq1[s[i]]--;
+                    i++;
+                }
+                if(l>j-i+1)
+                {
+                    l=j-i+1;
+                    start_idx=i;
+                }
+            }
+            j++;
+        }
+        if(l==INT_MAX)
+            return "";
+        return s.substr(start_idx,l);
+    }
+};
